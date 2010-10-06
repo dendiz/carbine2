@@ -86,6 +86,13 @@ Player.prototype.draw = function() {
 	C.ctx.drawImage(this.sprite,0-w,0-h);
 	C.ctx.restore();
 
+	this.draw_healthbar();
+	this.check_reload_finished();
+	if (this.reloading)
+		this.reload_anim();
+}
+Player.prototype.draw_healthbar = function() {
+	C.ctx.drawImage(C.images.heart, C.canvas.w-170,12);
 	C.ctx.beginPath();
 	C.ctx.strokeStyle = "red";
 	C.ctx.moveTo(C.canvas.w-150, 20);
@@ -99,12 +106,8 @@ Player.prototype.draw = function() {
 	C.ctx.lineTo(C.canvas.w-150+this.health+(100-this.health), 20);
 	C.ctx.closePath();
 	C.ctx.stroke();
-	
-	this.check_reload_finished();
-	if (this.reloading)
-		this.reload_anim();
-}
 
+}
 Player.prototype.fire = function() {
 //file a projectile form the weapon
 	if (this.reloading) return;
