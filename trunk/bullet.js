@@ -19,6 +19,8 @@ Bullet = function(x,y) {
 	//x,y coord's of the trail
 	this.tx = this.x;
 	this.ty = this.y;
+
+	this.damage = 30; //total damge inflicted on collision. Subtracted from health
 }
 
 Bullet.prototype.detect_collision = function() {
@@ -47,7 +49,7 @@ Bullet.prototype.move = function() {
 	var collision = this.detect_collision();
 	if(collision) {
 		this.evict();
-		C.zombies[collision.pos].hit();
+		C.zombies[collision.pos].hit(this.damage);
 	}
 	if (this.x < 0 || this.x > C.canvas.w) this.evict();
 	if (this.y < 0 || this.y > C.canvas.h) this.evict();

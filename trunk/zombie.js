@@ -67,17 +67,24 @@ Zombie.prototype.draw = function() {
 //draw a zombie on the canvas
 	var w = C.images.zombie[0].width/2;
 	var h = C.images.zombie[0].height/2;
+	var p = ~~((this.health / 100) * w);
 	C.ctx.save();
 	C.ctx.translate(this.x,this.y);
 	C.ctx.rotate(Math.PI-this.direction);
-	C.ctx.drawImage(this.sprite,
-		0-w,0-h);
+	C.ctx.drawImage(this.sprite,0-w,0-h);
+	C.ctx.beginPath();
+	C.ctx.strokeStyle = 'red';
+	C.ctx.moveTo(-w+5,h-10);
+	C.ctx.lineTo(-w+10+p,h-10);
+	C.ctx.closePath();
+	C.ctx.stroke();
 	C.ctx.restore();
 }
-Zombie.prototype.hit = function() {
+Zombie.prototype.hit = function(damage) {
 //zombie got hit by a projectile
 //TODO: damage factor of projectile or laser
-	this.die();
+	this.health -= damage;
+	if (this.health < 0) this.die();
 }
 
 Zombie.prototype.die = function() {
