@@ -91,6 +91,9 @@ C.load_resources = function() {
 	C.images.blood2 = new Image();
 	C.images.blood2.src = "img/blood2.png";
 
+	C.images.heart = new Image();
+	C.images.heart.src = "img/heart.png";
+
 	C.images.zombie = [];
 	var zi = ['img/zombi1.png','img/zombi3.png','img/zombi2.png','img/zombi3.png'];
 	for (var j=0;j<2;j++){
