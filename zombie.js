@@ -5,12 +5,14 @@ Zombie = function(id,x,y) {
 	this.y = y;
 	this.radius = 20;
 	this.health = 100;
-	this.max_vel = 0.8; //maximum velocity;
+	this.max_vel = 0.3; //maximum velocity;
 	this.vel = 0.2 + Math.random() * this.max_vel; //velocity
 	this.direction = Math.atan2(C.player.x-this.x, C.player.y-this.y);
 	this.sprite = null;
 	this.bloody = Math.random(); //draws more blood when shot
 	this.blood_phi = Math.random() * 2 * Math.PI; //angle of the blood sprite
+	this.damage = 2;
+	this.killpause = false;
 }
 Zombie.prototype.detect_zombie_collision = function() {
 	var dir = Math.atan2(C.player.x-this.x, C.player.y-this.y);
@@ -40,6 +42,13 @@ Zombie.prototype.move = function() {
 	if (zc == null) return;
 	this.direction = zc;
 	var dice = Math.random();
+	if (this.killpause) {
+		//after a collision with the player set the zombie to pause mode.
+		//in pause mode the zombie cannot harm the player. a 40 % chance of
+		//flipping out of kill pause each round.
+		if (dice < 0.4) this.killpause = false; 
+		else return; //pause the zombie
+	}
 	if (dice < 0.4) { //40% change of a pause.
 	}
 	if (dice < 0.6) {//20% chance of a direction alteration 
@@ -48,12 +57,13 @@ Zombie.prototype.move = function() {
 	}
 	var interval = Math.ceil((C.frame / (this.vel * 10)));
 	this.sprite = C.images.zombie[(interval % C.images.zombie.length)];
-	var newy = Math.cos(this.direction) * this.vel;
-	var newx = Math.sin(this.direction) * this.vel;
+	var newy = Math.cos(zc) * this.vel;
+	var newx = Math.sin(zc) * this.vel;
 	this.y += newy;
 	this.x += newx;
 	if (this.detect_collision(C.player.x, C.player.y, C.player.radius)) {
-		C.gameover();
+		this.killpause = true;
+		C.player.zombie_collide(this);
 	}
 }
 Zombie.prototype.detect_collision = function(x,y,r) {

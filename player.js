@@ -14,6 +14,7 @@ Player = function() {
 	this.sprite_idx = 1; //holds the index for the firing animation sprites
 	this.sprite = C.images.player[0];
 	this.reload_time = C.fps; //as fps
+	this.health = 100;
 }
 Player.prototype.bind_keys = function() {
 //bind the keyboard keys for player movement
@@ -84,6 +85,21 @@ Player.prototype.draw = function() {
 	C.ctx.rotate(Math.PI-this.direction);
 	C.ctx.drawImage(this.sprite,0-w,0-h);
 	C.ctx.restore();
+
+	C.ctx.beginPath();
+	C.ctx.strokeStyle = "red";
+	C.ctx.moveTo(C.canvas.w-150, 20);
+	C.ctx.lineTo(C.canvas.w-150+this.health, 20);
+	C.ctx.closePath();
+	C.ctx.stroke();
+
+	C.ctx.beginPath();
+	C.ctx.strokeStyle = "white";
+	C.ctx.moveTo(C.canvas.w-150+this.health, 20);
+	C.ctx.lineTo(C.canvas.w-150+this.health+(100-this.health), 20);
+	C.ctx.closePath();
+	C.ctx.stroke();
+	
 	this.check_reload_finished();
 	if (this.reloading)
 		this.reload_anim();
@@ -133,4 +149,8 @@ Player.prototype.reload_anim = function() {
 Player.prototype.add_xp = function() {
 	var p = C.dead.length/C.total_fired
 	this.xp += Math.floor(1000 * p);
+}
+Player.prototype.zombie_collide = function(zombie) {
+	this.health -= zombie.damage;
+	if (this.health<0) C.gameover();
 }
