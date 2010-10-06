@@ -141,6 +141,7 @@ Player.prototype.reload_anim = function() {
 	C.ctx.beginPath();
 	C.ctx.strokeStyle = "rgb(255,0,0)";
 	C.ctx.arc(0,0,11,0,Math.PI*2,true);
+	C.ctx.closePath();
 	C.ctx.stroke();
 	C.ctx.beginPath();
 	C.ctx.fillStyle = "rgba(128,128,128,0.6)";

@@ -49,7 +49,7 @@ Bullet.prototype.move = function() {
 	var collision = this.detect_collision();
 	if(collision) {
 		this.evict();
-		C.zombies[collision.pos].hit(this.damage);
+		C.zombies[collision.pos].hit(this);
 	}
 	if (this.x < 0 || this.x > C.canvas.w) this.evict();
 	if (this.y < 0 || this.y > C.canvas.h) this.evict();
@@ -66,7 +66,7 @@ Bullet.prototype.evict = function() {
 }
 
 Bullet.prototype.draw = function() {
-	var trail = 15;
+	var trail = 5;
 	C.ctx.beginPath();
 	C.ctx.arc(this.x,this.y,this.radius,0,Math.PI*2,true);
 	C.ctx.fillStyle = "white";

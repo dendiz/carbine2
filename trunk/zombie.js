@@ -90,10 +90,9 @@ Zombie.prototype.draw = function() {
 	C.ctx.stroke();
 	C.ctx.restore();
 }
-Zombie.prototype.hit = function(damage) {
+Zombie.prototype.hit = function(projectile) {
 //zombie got hit by a projectile
-//TODO: damage factor of projectile or laser
-	this.health -= damage;
+	this.health -= projectile.damage;
 	if (this.health < 0) this.die();
 }
 
