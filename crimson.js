@@ -1,7 +1,7 @@
 C = {canvas: {}, mouse:{}, sounds:{}, canvasobj:{}, raid:{}};
 C.pause = false;
-C.canvas.w = 640;
-C.canvas.h = 480;
+C.canvas.w = 740;
+C.canvas.h = 570;
 C.zombies = [];
 C.level = 1;
 C.raid.ratios = [0.1, 0.2, 0.3, 0.4];
@@ -110,8 +110,8 @@ C.mousedown_handler = function(evt) {
 }
 C.mousemove_handler = function(evt) {
 	var pos = C.canvasobj;
-	var x = evt.pageX - C.canvasobj.offsetLeft;
-	var y = evt.pageY - C.canvasobj.offsetTop;
+	var x = evt.pageX - pos.offsetLeft;
+	var y = evt.pageY - pos.offsetTop;
 	C.mouse.currentx = x;
 	C.mouse.currenty = y;
 	C.update_crosshair(x,y);
@@ -181,14 +181,16 @@ C.create_zombies = function() {
 }
 C.render_bg = function() {
 //render terrain bg
-	var iw = C.images.terrain.width;
-	var ih = C.images.terrain.height;
-	var xtimes = Math.ceil(C.canvas.w / iw);
-	var ytimes = Math.ceil(C.canvas.h / ih);
-	for (var i=0;i<xtimes;i++){
-		for (var j=0;j<ytimes;j++) {
-			C.ctx.drawImage(C.images.terrain,
-				i*iw,j*ih);
+	var img = C.images.terrain;
+	var iw = img.width;
+	var ih = img.height;
+	var canvas = C.canvas;
+	var xtimes = Math.ceil(canvas.w / iw);
+	var ytimescache = Math.ceil(canvas.h / ih);
+	while(xtimes-- > 0) {
+		var ytimes = ytimescache;
+		while(ytimes-- > 0){
+			C.ctx.drawImage(img,xtimes*iw,ytimes*ih);
 		}
 	}
 }
