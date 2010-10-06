@@ -120,21 +120,24 @@ C.mousemove_handler = function(evt) {
 C.update_crosshair = function(x,y) {
 	C.crosshair_x = x;
 	C.crosshair_y = y;
-	C.crosshair_radius = Math.max(C.projectiles.length * 10,15);
+	var l = C.projectiles.length * 10
+	C.crosshair_radius = l > 15 ? l : 15;
 }
 C.draw_crosshair = function() {
 	var x = C.crosshair_x;
 	var y = C.crosshair_y;
-	if (x == undefined || x == null) x = C.canvas.w/2;
-	if (y == undefined || y == null) y = C.canvas.h/2;
+	var twopi = Math.PI * 2;
+	if (!!!x) x = C.canvas.w/2;
+	if (!!!y) y = C.canvas.h/2;
 	var r = C.crosshair_radius;
 	C.ctx.beginPath();
-	C.ctx.arc(x, y, r, 0, Math.PI*2, true);
+	C.ctx.arc(x, y, r, 0, twopi, true);
 	C.ctx.strokeStyle = "rgb(255,0,0)";
+	C.ctx.closePath();
 	C.ctx.stroke();
 	C.ctx.beginPath();
 	C.ctx.fillStyle = "rgba(31,32,37,0.6)";
-	C.ctx.arc(x,y,r,0,Math.PI*2,true);
+	C.ctx.arc(x,y,r,0,twopi,true);
 	C.ctx.fill();
 }
 C.levelcomplete = function() {
@@ -196,8 +199,8 @@ C.render_bg = function() {
 }
 C.render_stats = function() {
 //render various stats, hit ratio, fps, etc.
-	var c = 100*(C.dead.length)/C.total_fired;
-	var c = (c + "").substr(0,4) + "%";
+	var c = ~~(100*(C.dead.length)/C.total_fired);
+	var c = c +"%";
 	C.ctx.fillStyle = "white";
 	C.ctx.fillText("Hit ratio " + c, 10,10);
 	C.ctx.fillText("FPS: " + C.real_fps, 10,20);
