@@ -4,10 +4,10 @@ C.canvas.w = 740;
 C.canvas.h = 570;
 C.zombies = [];
 C.level = 1;
-C.raid.ratios = [0.1, 0.2, 0.3, 0.4];
+C.raid.ratios = [0.1, 0.1, 0.2, 0.2];
 C.raid.current = 0;
 C.zombies_alive = 0; //zombies that are still alive
-C.zombie_count = 100; //total # of zombies to create
+C.zombie_count = 50; //total # of zombies to create
 C.zombie_seq = 0; //used to generate unique ids for zombies
 C.projectiles = []; //projectiles on screen
 C.dead = []; //dead zombies (to display carcasses)
@@ -15,7 +15,7 @@ C.perks = []; //perks displayed on screen
 C.crosshair_radius = 15;
 C.images = {};
 C.real_fps = 0;
-C.fps = 30;
+C.fps = 23;
 C.prev_frame = 0;
 C.total_fired = 0; //used to calculate hit ratio
 C.raid.last_raid_interval = 0;
@@ -174,9 +174,8 @@ C.create_zombies = function() {
 		
 		for (var j=0,len=C.zombies.length;j<len;j++) {
 			var z = C.zombies[j];
-			if (z.detect_collision(x,y,z.radius)) {
+			if (Util.detect_collision(z.x,z.y,z.radius,x,y,z.radius)) {
 				i--;
-				console.log("zombie create collision");
 				continue cz;
 			}
 		}
@@ -292,18 +291,18 @@ C.rand_weapon_perk = function() {
 	if (Math.random() < 0.5) return;
 	var x = C.canvas.w * Math.random();
 	var y = C.canvas.h * Math.random();
-	var wa = [Submachinegun];
+	var wa = [Submachinegun,Shotgun,Pistol];
 	if (C.weapon_perk_present) {
 		//TODO: the perk should dissapear at some time.
 		return;
 	}
 	C.weapon_perk_present = true;
-	var w = wa[Math.floor((wa.length-1)*Math.random())];
+	var w = wa[Math.floor(wa.length*Math.random())];
 	var i = new Image();
 	i.src = w.image_file;
 	console.log("got random weapon perk %s at %d;%d", 
 		w.image_file, x, y);
-	C.perks.push({x:x,y:y,img:i});
+	C.perks.push({x:x,y:y,img:i,type:w,radius:25});
 }
 
 

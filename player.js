@@ -1,7 +1,7 @@
 Player = function() {
 	C.debug("created player");
 	this.xp = 0;
-	this.weapon = Submachinegun;// Pistol
+	this.weapon = Pistol;
 	this.x = C.canvas.w / 2;
 	this.y = C.canvas.h / 2;
 	this.radius = 10;
@@ -73,6 +73,7 @@ Player.prototype.move = function() {
 	} else {
 		this.sprite = C.images.player[this.sprite_idx];
 	}
+	this.perk_collision_detect();
 
 }
 
@@ -90,6 +91,22 @@ Player.prototype.draw = function() {
 	this.check_reload_finished();
 	if (this.reloading)
 		this.reload_anim();
+}
+Player.prototype.perk_collision_detect = function() {
+	var perks = C.perks;
+	for (var i=0,len=C.perks.length;i<len;i++) {
+		var p = perks[i];
+		if (Util.detect_collision(p.x,p.y,p.radius,
+			this.x,this.y,this.radius)) {
+			console.log('collected perk of type %s', p.type.name);
+			if (p.type.name == "submachine gun") this.weapon = Submachinegun;
+			if (p.type.name == 'pistol') this.weapon = Pistol;
+			if (p.type.name == 'shotgun') this.weapon = Shotgun;
+			this.bullets = this.weapon.mag_size;
+			C.perks.splice(i,1);
+			break;
+		}
+	}		
 }
 Player.prototype.draw_healthbar = function() {
 	C.ctx.drawImage(C.images.heart, C.canvas.w-170,12);
@@ -113,7 +130,7 @@ Player.prototype.fire = function() {
 	if (this.reloading) return;
 	if (C.frame < this.weapon.last_fire_frame + this.weapon.fire_interval) 
 		return;
-	if (this.bullets == 0) {
+	if (this.bullets < 1) {
 		this.reload();
 		return;
 	}
@@ -129,7 +146,7 @@ Player.prototype.check_reload_finished = function() {
 	}
 }
 Player.prototype.reload = function() {
-//reload the weapon
+//reload the weapon, the bullets are loaded at the reload finished event.
 	console.log("reloading started");
 	this.reload_start_frame = C.frame;
 	this.reloading = true;
