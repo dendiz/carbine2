@@ -1,5 +1,4 @@
 Zombie = function(id,x,y) {
-	C.debug("created zombie");
 	this.id = id;
 	this.x = x;
 	this.y = y;
@@ -21,7 +20,7 @@ Zombie.prototype.detect_zombie_collision = function() {
 	for (var j=0,len=C.zombies.length;j<len;j++){
 		var z = C.zombies[j];
 		if (z.id == this.id) continue;
-		if (this.detect_collision(z.x,z.y,z.radius)) {
+		if (Util.detect_collision(z.x,z.y,z.radius,this.x,this.y,this.radius)) {
 			var dx1 = this.x - C.player.x;
 			var dy1 = this.y - C.player.y;
 			var d1 = dx1*dx1 + dy1*dy1;
@@ -61,17 +60,11 @@ Zombie.prototype.move = function() {
 	var newx = Math.sin(zc) * this.vel;
 	this.y += newy;
 	this.x += newx;
-	if (this.detect_collision(C.player.x, C.player.y, C.player.radius)) {
+	if (Util.detect_collision(C.player.x, C.player.y, C.player.radius,
+			this.x,this.y,this.radius)) {
 		this.killpause = true;
 		C.player.zombie_collide(this);
 	}
-}
-Zombie.prototype.detect_collision = function(x,y,r) {
-//detect a collision with object at x,y with radius r
-	var xx = this.x - x;
-	var yy = this.y - y;
-	var d = Math.sqrt(xx*xx + yy*yy);
-	return d < this.radius + r
 }
 Zombie.prototype.draw = function() {
 //draw a zombie on the canvas
