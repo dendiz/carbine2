@@ -1,0 +1,1 @@
+A demonstration of HTML5 canvas
