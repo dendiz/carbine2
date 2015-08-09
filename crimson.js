@@ -21,6 +21,14 @@ C.total_fired = 0; //used to calculate hit ratio
 C.raid.last_raid_interval = 0;
 C.mouse = [false,false]; //mouse buttons
 document.addEventListener("DOMContentLoaded", function() {C.init()}, false);
+
+/*
+ initialize the game settings
+ - load the game sprites
+ - create the canvas
+ - bind the event listeners
+ - start the game loop
+*/
 C.init = function() {
 	C.check_firebug();
 	console.log("init");
@@ -47,6 +55,9 @@ C.init = function() {
 	setInterval(C.rand_weapon_perk, 1000);
 }
 
+/*
+	calculate our FPS rate
+*/
 C.fps_timer = function() {
 	C.real_fps = C.frame - C.prev_frame;
 	C.prev_frame = C.frame;
@@ -54,6 +65,10 @@ C.fps_timer = function() {
 C.debug = function(msg) {
 	console.log(msg);
 }
+/*
+	old browsers don't provide a console object, emulate it
+	if we need to
+*/
 C.check_firebug = function() {
 	if (!window.console || !console.firebug) {
 		(function (m, i) {
@@ -64,6 +79,9 @@ C.check_firebug = function() {
 		})('log debug info warn error'.split(' '), 5);
 	}
 }
+/*
+load the game images and the hero and zombie sprites
+*/
 C.load_resources = function() {
 	//player - silent
 	C.debug("loading resources.");
@@ -103,6 +121,10 @@ C.load_resources = function() {
 		}
 	}
 }
+/*
+track the mouse button states. we need this so that the player
+can hold down the fire button to fire rapidly with the sub machine gun
+*/
 C.mouseup_handler = function(evt) {
 	evt.preventDefault();
 	C.mouse[0] = false;
@@ -111,6 +133,9 @@ C.mousedown_handler = function(evt) {
 	evt.preventDefault();
 	C.mouse[0] = true;
 }
+/*
+	track the mouse coordinates and update the crosshair accordingly.
+*/
 C.mousemove_handler = function(evt) {
 	var pos = C.canvasobj;
 	var x = evt.pageX - pos.offsetLeft;
@@ -119,13 +144,20 @@ C.mousemove_handler = function(evt) {
 	C.mouse.currenty = y;
 	C.update_crosshair(x,y);
 }
-
+/*
+ set the coordinates for the crosshair. the cross hair radius should increase
+ after a certain amount of projectiles are fired. this simulates inaccuracy due
+ to weapon recoil
+*/
 C.update_crosshair = function(x,y) {
 	C.crosshair_x = x;
 	C.crosshair_y = y;
 	var l = C.projectiles.length * 10
 	C.crosshair_radius = l > 15 ? l : 15;
 }
+/*
+ draw a circle for the crosshair on the canvas
+*/
 C.draw_crosshair = function() {
 	var x = C.crosshair_x;
 	var y = C.crosshair_y;
@@ -143,10 +175,12 @@ C.draw_crosshair = function() {
 	C.ctx.arc(x,y,r,0,twopi,true);
 	C.ctx.fill();
 }
+
 C.levelcomplete = function() {
 	setTimeout("clearInterval(C.timer)",2000); //delay to let the bullets fly
 	console.log("level completed!");
 }
+
 C.gameover = function() {
 	clearInterval(C.timer);
 	C.canvasobj.removeEventListener('mousemove', C.mousemove_handler, false);
@@ -154,8 +188,12 @@ C.gameover = function() {
 	C.canvasobj.removeEventListener('mouseup', C.mouseup_handler, false);
 	console.log("game over!");
 }
+/*
+create some zombies. The number of zombies increases with the level.
+distribute the zombie spawn coordinates randomly on the upper corners 
+of the canvas. If zombies collide when spawning skip that zombie and try again.
+*/
 C.create_zombies = function() {
-//create some zombies
 	C.debug("creating zombies");
 	if (C.raid.current >= C.raid.ratios.length) return;
 	var zc = C.zombie_count * C.raid.ratios[C.raid.current]; //zombie count
@@ -247,6 +285,9 @@ C.terrain = function() {
 	C.render_perks();
 }
 
+/*
+do all the game processing. 
+*/
 C.update = function() {
 //call all actors coordinate calculations
 	if (C.pause) return;

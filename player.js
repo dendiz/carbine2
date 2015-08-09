@@ -21,6 +21,7 @@ Player.prototype.bind_keys = function() {
 	C.debug("binding keys");
 	document.onkeydown = function(event) {
 		var keyCode = (event === null ? window.event.keyCode : event.keyCode);
+		//set the movement vector for the next frame
 		switch(keyCode) {
 			case 27:
 				C.pause = !C.pause;
@@ -61,12 +62,14 @@ Player.prototype.move = function() {
 	this.x += this.vel2;
 	this.y += this.vel;
 	if (this.vel2 != 0 || this.vel != 0) {
+		//calculate the next sprite for the hero image
 		var interval = Math.ceil((C.frame / C.fps)*2);
 		var len = C.images.player.length;
 		this.sprite_idx = (interval % len);
 		this.sprite = C.images.player[this.sprite_idx];
 	}
 	if (this.fire_anim) {
+		//calculate the fire animation sprite index
 		var interval = Math.ceil(C.frame / C.fps);
 		var len = C.images.playerfire.length;
 		this.sprite = C.images.playerfire[(interval % len)];
@@ -128,6 +131,7 @@ Player.prototype.draw_healthbar = function() {
 Player.prototype.fire = function() {
 //file a projectile form the weapon
 	if (this.reloading) return;
+	//check if the weapon can fire rapidly (sub machine gun)
 	if (C.frame < this.weapon.last_fire_frame + this.weapon.fire_interval) 
 		return;
 	if (this.bullets < 1) {
@@ -168,10 +172,12 @@ Player.prototype.reload_anim = function() {
 	C.ctx.restore();
 }
 Player.prototype.add_xp = function() {
+	//gain some XP points according to the hit ratio
 	var p = C.dead.length/C.total_fired
 	this.xp += Math.floor(1000 * p);
 }
 Player.prototype.zombie_collide = function(zombie) {
+	//deduct some health points if the hero collides with a zombie
 	this.health -= zombie.damage;
 	if (this.health<0) C.gameover();
 }

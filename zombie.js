@@ -6,13 +6,14 @@ Zombie = function(id,x,y) {
 	this.health = 100;
 	this.max_vel = 0.3; //maximum velocity;
 	this.vel = 0.2 + Math.random() * this.max_vel; //velocity
-	this.direction = Math.atan2(C.player.x-this.x, C.player.y-this.y);
+	this.direction = Math.atan2(C.player.x-this.x, C.player.y-this.y); //set the direction towards the player
 	this.sprite = null;
 	this.bloody = Math.random(); //draws more blood when shot
 	this.blood_phi = Math.random() * 2 * Math.PI; //angle of the blood sprite
 	this.damage = 2;
-	this.killpause = false;
+	this.killpause = false; //stop chasing the player for some time if we collide
 }
+
 Zombie.prototype.detect_zombie_collision = function() {
 	var dir = Math.atan2(C.player.x-this.x, C.player.y-this.y);
 	var prev_direction = this.direction; //cache the current direction
@@ -32,7 +33,7 @@ Zombie.prototype.detect_zombie_collision = function() {
 				return null;
 		} 
 	}
-	this.direction = prev_direction;
+	this.direction = prev_direction; //pause at the previous direction after we touch the player
 	return dir;
 }
 Zombie.prototype.move = function() {

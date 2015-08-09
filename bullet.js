@@ -5,7 +5,7 @@ Bullet = function(x,y) {
 	this.x = x;
 	this.y = y;
 
-	//random point inside crosshair area
+	//random point inside crosshair area to simulate inaccuracy due to recoil
 	var randphi = Math.random() * 2 * Math.PI;
 	var randr = Math.random() * C.crosshair_radius;
 	var dx = C.crosshair_x + randr * Math.cos(randphi);
@@ -25,7 +25,7 @@ Bullet = function(x,y) {
 
 Bullet.prototype.detect_collision = function() {
 //check for a collision with an object (zombie)
-//return the id and position if array of the object if there is a collision
+//return the id and position in array of the object if there is a collision
 	for (var i in C.zombies) {
 		var z = C.zombies[i];
 		var xx = this.x - z.x;
